@@ -1,21 +1,43 @@
-const contactsRepository = require("./contacts");
+const contactsRepository = require('./contacts');
 
-run ()
+const { Command } = require('commander');
+const program = new Command();
+program
+  .option('-a, --action <type>', 'choose action')
+  .option('-i, --id <type>', 'user id')
+  .option('-n, --name <type>', 'user name')
+  .option('-e, --email <type>', 'user email')
+  .option('-p, --phone <type>', 'user phone');
 
-async function run () {
-    try {
-    // const results = await getContactById('7');
-    // console.log(results) 
-    // const newContact = await addContact({name: "Alina", email:"alina@vestibul.co.uk", phone:"(294) 555-6685" });
-    // console.log(newContact)
-    // await contactsRepository.removeContact("1")
-    }
-    catch(err) {
-        console.log(err)
-    }
-   
+program.parse(process.argv);
+
+const argv = program.opts();
+
+async function invokeAction({ action, id, name, email, phone }) {
+  switch (action) {
+    case 'list':
+      const allContacts = await contactsRepository.getAllContacts();
+      console.log(allContacts);
+      break;
+
+    case 'get':
+      const contact = await contactsRepository.getContactById(id);
+      console.log(contact);
+      break;
+
+    case 'add':
+      const newContact = await contactsRepository.addContact({ name, email, phone });
+      console.log(newContact);
+      break;
+
+    case 'remove':
+      const removedContact = await contactsRepository.removeContact(id);
+      console.log(removedContact);
+      break;
+
+    default:
+      console.warn('\x1B[31m Unknown action type!');
+  }
 }
 
-
-
-
+invokeAction(argv);

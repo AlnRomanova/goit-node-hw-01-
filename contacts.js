@@ -1,5 +1,5 @@
+const shortid = require('shortid');
 const fsp = require('fs/promises');
-const { nanoid } = require('nanoid');
 const path = require('path');
 
 const contactsPath = path.join(__dirname, './db/contacts.json');
@@ -33,7 +33,7 @@ const removeContact = async contactId => {
 const addContact = async ({ name, email, phone }) => {
   const contacts = await getAllContacts();
   const newContact = {
-    id: nanoid(),
+    id: shortid.generate(),
     name,
     email,
     phone,
