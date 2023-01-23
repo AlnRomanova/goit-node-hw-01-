@@ -16,8 +16,8 @@ const argv = program.opts();
 async function invokeAction({ action, id, name, email, phone }) {
   switch (action) {
     case 'list':
-      const allContacts = await contactsRepository.getAllContacts();
-      console.log(allContacts);
+      const allContacts = await contactsRepository.listContacts();
+      console.table(allContacts);
       break;
 
     case 'get':
@@ -32,7 +32,7 @@ async function invokeAction({ action, id, name, email, phone }) {
 
     case 'remove':
       const removedContact = await contactsRepository.removeContact(id);
-      console.log(removedContact);
+      console.table(removedContact);
       break;
 
     default:

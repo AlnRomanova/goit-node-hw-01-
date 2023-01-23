@@ -7,31 +7,45 @@ const contactsPath = path.join(__dirname, './db/contacts.json');
 const updateContactsList = async contacts =>
   await fsp.writeFile(contactsPath, JSON.stringify(contacts, null, 2));
 
-  
-const getAllContacts = async () => {
-  const contacts = await fsp.readFile(contactsPath);
-  return JSON.parse(contacts);
+const listContacts = async () => {
+  try {
+    const contacts = await fsp.readFile(contactsPath);
+    return JSON.parse(contacts);
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 const getContactById = async contactId => {
-  const contacts = await getAllContacts();
-  const contact = contacts.find(contact => contact.id === contactId);
-  if (!contact) {
-    throw new Error('the contact is not found');
+  try {
+    const contacts = await listContacts();
+    const contact = contacts.find(contact => contact.id === contactId);
+    if (!contact) {
+      throw new Error('The contact is not found');
+    }
+    return contact;
+  } catch (error) {
+    console.log(error);
   }
-  return contact;
 };
 
 const removeContact = async contactId => {
-  const contacts = await getAllContacts();
-  const index = contacts.findIndex(contacts => contacts.id === contactId);
-  contacts.splice(index, 1);
-  await updateContactsList(contacts);
-  return contacts[index];
+  try {
+    const contacts = await listContacts();
+    const index = contacts.findIndex(contacts => contacts.id === contactId);
+    if (index === -1) {
+      throw new Error('The contact is never exicted');
+    }
+    contacts.splice(index, 1);
+    await updateContactsList(contacts);
+    return contacts;
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 const addContact = async ({ name, email, phone }) => {
-  const contacts = await getAllContacts();
+  const contacts = await listContacts();
   const newContact = {
     id: shortid.generate(),
     name,
@@ -39,13 +53,17 @@ const addContact = async ({ name, email, phone }) => {
     phone,
   };
 
+  if (name === '' || email === '' || phone === '') {
+    throw new Error('Please fill in all required fiels');
+  }
+
   contacts.push(newContact);
   await updateContactsList(contacts);
   return newContact;
 };
 
 module.exports = {
-  getAllContacts,
+  listContacts,
   getContactById,
   removeContact,
   addContact,
