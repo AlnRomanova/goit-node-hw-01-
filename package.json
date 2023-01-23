@@ -20,5 +20,8 @@
   "homepage": "https://github.com/AlnRomanova/goit-node-hw-01-#readme",
   "devDependencies": {
     "nodemon": "^2.0.20"
+  },
+  "dependencies": {
+    "nanoid": "^3.3.4"
   }
 }
